@@ -8,6 +8,17 @@ Codex Agent Workflow Kit is an early-stage project for maintainers who want AI c
 
 The Python import module remains `codex_multi_agent_workflow_kit` so the package stays descriptive while the public repository name stays short.
 
+## What This Actually Does
+
+This repo does one focused job: it gives maintainers a repeatable workflow scaffold for Codex-assisted projects.
+
+1. `init` adds four operating files to a target repo: `AGENTS.md`, `WORKFLOW.md`, `HANDOFF.md`, and `FINAL_KEEP/README.md`.
+2. `check` verifies that those files and their required sections exist.
+3. The templates explain Markdown-level operating roles: who is acting as manager, project lead, and reviewer, what must be handed off, and where final artifacts belong.
+4. Maintainers can run the same checks locally or in CI before accepting agent-assisted changes.
+
+It does not run an AI agent, call an API, manage secrets, or replace human review. See [docs/core-capability.md](docs/core-capability.md) for a concrete command-by-command example.
+
 ## For OSS Maintainers Using Codex
 
 This kit is for projects where Codex or another AI coding agent helps with real maintainer work:
@@ -122,6 +133,7 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   `-- FINAL_KEEP/
 |       `-- README.md
 |-- docs/
+|   |-- core-capability.md
 |   |-- maintainer-playbook.md
 |   |-- openai-oss-application.md
 |   `-- security-checklist.md

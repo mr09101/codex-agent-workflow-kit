@@ -2,7 +2,7 @@
 
 ## Current Status
 
-- Status: Public repository exists, OpenAI Codex OSS application has been submitted, and first growth-docs pass is complete.
+- Status: Public repository exists, OpenAI Codex OSS application has been submitted, and first manual growth update is ready for final commit.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
 - Last updated: 2026-06-17.
@@ -23,18 +23,24 @@
   - `.github/ISSUE_TEMPLATE/feature_request.md`
 - Expanded README for OSS maintainers using Codex, including CI badge, maintainer workflow example, safety model, early-stage status, and roadmap link.
 - Created a separate growth-document review thread for public OSS quality review.
+- Manual growth update: added a concise "What This Actually Does" section to README and a new `docs/core-capability.md` page explaining the exact `init`/`check` scaffold-and-validate workflow.
+- Applied core-capability review feedback by clarifying that manager/project lead/reviewer are Markdown workflow roles, not an orchestration runtime, and that `check` validates structure rather than implementation quality.
 
 ## Verification
 
-- `python -m unittest discover -s tests`: passed with bundled Python 3.12 runtime.
-- `python -m codex_multi_agent_workflow_kit.cli init .tmp_growth_check`: passed.
-- `python -m codex_multi_agent_workflow_kit.cli check .tmp_growth_check`: passed.
-- `.tmp_growth_check`: removed after smoke test.
-- Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`; no private path, email address, account credential, or secret assignment value was found.
+- Final manual-update verification:
+  - `python -m unittest discover -s tests`: passed with bundled Python 3.12 runtime.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_manual_growth_check`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_manual_growth_check`: passed.
+  - `.tmp_manual_growth_check`: removed after smoke test.
+  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`; no private path, email address, account credential, or secret assignment value was found.
 - Growth document review thread: completed. Reviewer noted that the docs look practical for OSS maintainers, describe safety gates without overclaiming, and clearly present the project as early-stage.
+- Core capability review thread: created for README/user-understanding review.
 
 ## Next Steps
 
+- Commit with `docs: clarify core workflow kit purpose`.
+- Push `main` to `origin/main`.
 - Watch GitHub Actions after push.
 
 ## Risks and Notes
