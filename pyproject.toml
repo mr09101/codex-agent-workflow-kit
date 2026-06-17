@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "codex-multi-agent-workflow-kit"
+name = "codex-agent-workflow-kit"
 version = "0.1.0"
-description = "A small CLI and template kit for safer Codex multi-agent workflows."
+description = "A dependency-free CLI and template kit for safer Codex agent workflows."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
