@@ -1,21 +1,25 @@
 # Codex Agent Workflow Kit
 
-**A dependency-free operational layer for running Codex and AI coding agents with manager roles, project leads, reviewer gates, durable handoffs, and clean final artifacts.**
+[![CI](https://github.com/mr09101/codex-agent-workflow-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/mr09101/codex-agent-workflow-kit/actions/workflows/ci.yml)
 
-Recommended public repository name: `codex-agent-workflow-kit`.
+**A dependency-free operational layer for OSS maintainers using Codex: manager roles, project leads, reviewer gates, durable handoffs, and clean final artifacts.**
 
-The Python import module remains `codex_multi_agent_workflow_kit` so the package stays descriptive while the public repo name stays short.
+Codex Agent Workflow Kit is an early-stage project for maintainers who want AI coding agents to be easier to review, continue, and audit. It turns the parts that usually live in chat history into small Markdown files and CI-checkable workflow hygiene.
 
-## Why It Is Useful
+The Python import module remains `codex_multi_agent_workflow_kit` so the package stays descriptive while the public repository name stays short.
 
-Codex is strongest when project operations are explicit. This kit gives AI-assisted projects a small, repeatable structure for the parts that usually live only in chat history:
+## For OSS Maintainers Using Codex
 
-- Manager, project lead, and reviewer responsibilities.
-- Durable `HANDOFF.md` files for context resets and tool changes.
-- Review gates for safety, docs, verification, release readiness, and Git hygiene.
-- `FINAL_KEEP` conventions so final user-facing artifacts are not mixed with scratch work.
-- CI-checkable repo hygiene through a tiny Python CLI.
-- Conservative defaults for public and private projects.
+This kit is for projects where Codex or another AI coding agent helps with real maintainer work:
+
+- Triaging issues into scoped agent tasks.
+- Assigning implementation to a project lead session.
+- Running reviewer gates before merge or release.
+- Recovering context through `HANDOFF.md` after a session reset.
+- Keeping final user-facing artifacts separate from scratch outputs.
+- Checking workflow files in CI before changes are accepted.
+
+The goal is not to add ceremony. The goal is to make agent-assisted maintenance visible enough that humans can trust and continue it.
 
 ## Features
 
@@ -25,7 +29,8 @@ Codex is strongest when project operations are explicit. This kit gives AI-assis
 - No network calls.
 - No generated secrets, credentials, or `.env` files.
 - No overwrite by default. Existing files are skipped unless `--force` is passed.
-- Works locally, in CI, or as a pre-release review step.
+- CI-friendly tests cover template creation, missing-file failures, missing-section failures, and no-overwrite behavior.
+- Templates cover manager/project lead/reviewer roles, handoff discipline, review gates, repo hygiene, and final-artifact handling.
 
 ## Quick Start
 
@@ -62,9 +67,20 @@ my-agent-project/
 ```
 
 - `AGENTS.md`: agent rules, role boundaries, safety expectations, and repo hygiene.
-- `WORKFLOW.md`: manager, lead, reviewer, verification, and release loops.
+- `WORKFLOW.md`: manager, project lead, reviewer, verification, and release loops.
 - `HANDOFF.md`: current status, recent changes, checks, risks, and next steps.
 - `FINAL_KEEP/README.md`: rules for final artifacts and archive discipline.
+
+## Maintainer Workflow Example
+
+1. **Issue triage:** a maintainer labels an issue as a small Codex-ready task and records acceptance criteria.
+2. **Manager pass:** a manager session chooses the repository, confirms constraints, and assigns a project lead.
+3. **Project lead pass:** the lead edits files, runs tests, updates `HANDOFF.md`, and stages only related changes.
+4. **Reviewer pass:** a reviewer checks public docs, generated artifacts, security notes, and release readiness.
+5. **Final artifact pass:** user-facing outputs go in `FINAL_KEEP`; scratch files stay out of the final surface.
+6. **Release pass:** CI runs tests and `codex-workflow-kit check` against generated workflow examples.
+
+See [docs/maintainer-playbook.md](docs/maintainer-playbook.md) for PR review, issue triage, release prep, and handoff recovery scenarios.
 
 ## Safety Model
 
@@ -75,18 +91,22 @@ The kit is intentionally small and conservative:
 - `init` skips existing files by default.
 - `check` exits with code `1` when required files or sections are missing.
 - Templates ask agents to record assumptions, verification commands, risks, and remaining work.
-- GitHub Actions can run the same tests used locally, including template creation, missing-file failures, missing-section failures, and no-overwrite behavior.
+- GitHub Actions can run the same tests used locally.
 
 This does not replace human review. It creates visible surfaces where review can happen.
 
-## Example Workflow
+See [docs/security-checklist.md](docs/security-checklist.md) for a maintainer-facing checklist.
 
-1. A manager thread receives a request and identifies the target project.
-2. A project lead thread owns file changes, tests, Git state, and `HANDOFF.md`.
-3. A reviewer thread checks public text, user-facing outputs, safety risks, and release readiness.
-4. Final artifacts are placed in `FINAL_KEEP`; scratch outputs stay elsewhere.
-5. The lead runs tests and `codex-workflow-kit check .`.
-6. The lead commits only related files after the review gates pass.
+## Project Status
+
+This is an early-stage OSS project. The first release focuses on a small, practical core:
+
+- Standard-library CLI.
+- Public-safe workflow templates.
+- Tests that run without external services.
+- Maintainer documentation for Codex-assisted operations.
+
+The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 
 ## Folder Structure
 
@@ -102,18 +122,20 @@ This does not replace human review. It creates visible surfaces where review can
 |   `-- FINAL_KEEP/
 |       `-- README.md
 |-- docs/
-|   `-- openai-oss-application.md
+|   |-- maintainer-playbook.md
+|   |-- openai-oss-application.md
+|   `-- security-checklist.md
 |-- examples/
 |   `-- ai-project-layout.md
 |-- tests/
 |   `-- test_cli.py
 `-- .github/
+    |-- ISSUE_TEMPLATE/
     `-- workflows/
-        `-- ci.yml
 ```
 
 ## OpenAI OSS Application Note
 
-This repository is designed to be a practical open source contribution for Codex users: a lightweight operations kit that improves multi-agent workflow, Codex Security-oriented operating habits, durable handoffs, review gates, repo hygiene, and auditable project delivery.
+This repository is a practical open source contribution for Codex users: a lightweight operations kit that improves multi-agent workflow, Codex Security-oriented operating habits, durable handoffs, review gates, repo hygiene, and auditable project delivery.
 
-See [docs/openai-oss-application.md](docs/openai-oss-application.md) for a paste-ready application draft.
+See [docs/openai-oss-application.md](docs/openai-oss-application.md) for the submitted application draft.
