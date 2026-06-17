@@ -29,7 +29,7 @@
 ## Next Steps
 
 - Wait for owner approval before creating or pushing the public GitHub repository.
-- Suggested remote URL shape: `https://github.com/<owner>/codex-agent-workflow-kit`.
+- Suggested remote URL: `https://github.com/mr09101/codex-agent-workflow-kit`.
 
 ## Risks and Notes
 

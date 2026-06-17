@@ -2,7 +2,7 @@
 
 ## Repository URL
 
-`https://github.com/<owner>/codex-agent-workflow-kit`
+`https://github.com/mr09101/codex-agent-workflow-kit`
 
 ## Short Description
 
