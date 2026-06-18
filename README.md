@@ -52,6 +52,8 @@ python -m codex_multi_agent_workflow_kit.cli init ./my-agent-project
 python -m codex_multi_agent_workflow_kit.cli check ./my-agent-project
 ```
 
+For expected pass and fail output, see [examples/check-output.md](examples/check-output.md).
+
 After installing locally:
 
 ```bash
@@ -138,7 +140,8 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   |-- openai-oss-application.md
 |   `-- security-checklist.md
 |-- examples/
-|   `-- ai-project-layout.md
+|   |-- ai-project-layout.md
+|   `-- check-output.md
 |-- tests/
 |   `-- test_cli.py
 `-- .github/
