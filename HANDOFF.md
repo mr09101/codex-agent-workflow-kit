@@ -2,10 +2,10 @@
 
 ## Current Status
 
-- Status: Weekly repo growth update prepared and verified: check-output examples were added for OSS maintainers using Codex.
+- Status: Weekly repo growth update prepared and verified: release checklist guidance was added for small public releases.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
-- Last updated: 2026-06-18.
+- Last updated: 2026-06-22.
 
 ## Recent Changes
 
@@ -28,6 +28,9 @@
 - Weekly growth update: added `examples/check-output.md` with passing and failing `init`/`check` output examples for maintainers.
 - Linked the new check-output examples from README quick start and added the file to the README folder structure.
 - Updated the roadmap wording so the passing/failing check examples are treated as something to keep maintained.
+- Weekly growth update: added `docs/release-checklist.md` for small public release preparation.
+- Linked the release checklist from README and the maintainer playbook.
+- Updated the roadmap wording so the release checklist is treated as maintained v0.2 material.
 
 ## Verification
 
@@ -46,13 +49,21 @@
   - `.tmp_weekly_repo_growth_check`: removed after smoke test.
   - Public-safety scan for local absolute paths and token patterns: passed with no matches.
   - GitHub issues: checked with `gh issue list`; no open issues were found.
+- Release-checklist weekly verification:
+  - `python -m unittest discover -s tests`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_release_check`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_release_check`: passed.
+  - `.tmp_release_check`: removed after smoke test.
+  - `git diff --check`: passed.
+  - Public-safety scan for local absolute paths and token patterns: passed with no matches.
+  - GitHub issues: checked with `gh issue list`; no open issues were found.
 
 ## Next Steps
 
-- Commit with `docs: add check output examples`.
+- Commit with `docs: add release checklist`.
 - Push `main` to `origin/main`.
 - Watch GitHub Actions after push.
-- Next small maintenance item: add a release checklist template for v0.2.
+- Next small maintenance item: add a documented review checklist for agent-authored pull requests.
 
 ## Risks and Notes
 

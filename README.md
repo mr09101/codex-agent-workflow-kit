@@ -94,6 +94,7 @@ my-agent-project/
 6. **Release pass:** CI runs tests and `codex-workflow-kit check` against generated workflow examples.
 
 See [docs/maintainer-playbook.md](docs/maintainer-playbook.md) for PR review, issue triage, release prep, and handoff recovery scenarios.
+Use [docs/release-checklist.md](docs/release-checklist.md) when preparing a small public release.
 
 ## Safety Model
 
@@ -109,6 +110,7 @@ The kit is intentionally small and conservative:
 This does not replace human review. It creates visible surfaces where review can happen.
 
 See [docs/security-checklist.md](docs/security-checklist.md) for a maintainer-facing checklist.
+See [docs/release-checklist.md](docs/release-checklist.md) for a release gate checklist.
 
 ## Project Status
 
@@ -138,6 +140,7 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   |-- core-capability.md
 |   |-- maintainer-playbook.md
 |   |-- openai-oss-application.md
+|   |-- release-checklist.md
 |   `-- security-checklist.md
 |-- examples/
 |   |-- ai-project-layout.md

@@ -48,6 +48,8 @@ Remove `.tmp_playbook_check` after the smoke test.
 
 ## Scenario 3: Release Prep
 
+Use `docs/release-checklist.md` as the detailed release gate. The quick pass is:
+
 1. Review `ROADMAP.md` and identify the release scope.
 2. Run tests locally.
 3. Run a fresh `init`/`check` smoke test.
