@@ -2,10 +2,10 @@
 
 ## Current Status
 
-- Status: Weekly repo growth update prepared and verified: release checklist guidance was added for small public releases.
+- Status: Weekly repo growth update prepared and verified: agent-authored pull request review checklist guidance was added.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
-- Last updated: 2026-06-22.
+- Last updated: 2026-06-25.
 
 ## Recent Changes
 
@@ -31,6 +31,9 @@
 - Weekly growth update: added `docs/release-checklist.md` for small public release preparation.
 - Linked the release checklist from README and the maintainer playbook.
 - Updated the roadmap wording so the release checklist is treated as maintained v0.2 material.
+- Weekly growth update: added `docs/agent-pr-review-checklist.md` for reviewing agent-authored pull requests.
+- Linked the agent pull request review checklist from README and the maintainer playbook.
+- Updated the roadmap wording so the review checklist is treated as maintained v0.2 material.
 
 ## Verification
 
@@ -57,13 +60,21 @@
   - `git diff --check`: passed.
   - Public-safety scan for local absolute paths and token patterns: passed with no matches.
   - GitHub issues: checked with `gh issue list`; no open issues were found.
+- Agent pull request checklist weekly verification:
+  - `python -m unittest discover -s tests`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_agent_pr_review`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_agent_pr_review`: passed.
+  - `.tmp_agent_pr_review`: removed after smoke test.
+  - `git diff --check`: passed.
+  - Public-safety scan for local absolute paths, email addresses, token patterns, and secret assignment patterns: passed. The only match was the documented scan command in `docs/security-checklist.md`.
+  - GitHub issues: checked with `gh issue list`; no open issues were found.
 
 ## Next Steps
 
-- Commit with `docs: add release checklist`.
+- Commit with `docs: add agent pr review checklist`.
 - Push `main` to `origin/main`.
 - Watch GitHub Actions after push.
-- Next small maintenance item: add a documented review checklist for agent-authored pull requests.
+- Next small maintenance item: add guidance for when to use manager, project lead, reviewer, and subagent roles.
 
 ## Risks and Notes
 

@@ -12,7 +12,7 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 
 ## v0.2: Review And Release Gates
 
-- Add a documented review checklist for agent-authored pull requests.
+- Maintain the documented review checklist for agent-authored pull requests.
 - Maintain the release checklist template for small OSS packages.
 - Expand `check` with optional warnings for stale handoff files.
 - Maintain examples that show passing and failing workflow checks.

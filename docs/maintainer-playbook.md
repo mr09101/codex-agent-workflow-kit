@@ -46,6 +46,8 @@ python -m codex_multi_agent_workflow_kit.cli check .tmp_playbook_check
 
 Remove `.tmp_playbook_check` after the smoke test.
 
+For a fuller agent-authored pull request gate, use `docs/agent-pr-review-checklist.md`.
+
 ## Scenario 3: Release Prep
 
 Use `docs/release-checklist.md` as the detailed release gate. The quick pass is:
