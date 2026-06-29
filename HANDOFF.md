@@ -2,10 +2,10 @@
 
 ## Current Status
 
-- Status: Weekly repo growth update prepared and verified: agent-authored pull request review checklist guidance was added.
+- Status: Weekly repo growth update prepared and verified: role-selection guidance for manager, project lead, reviewer, subagent, and maintainer passes was added.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
-- Last updated: 2026-06-25.
+- Last updated: 2026-06-29.
 
 ## Recent Changes
 
@@ -34,6 +34,9 @@
 - Weekly growth update: added `docs/agent-pr-review-checklist.md` for reviewing agent-authored pull requests.
 - Linked the agent pull request review checklist from README and the maintainer playbook.
 - Updated the roadmap wording so the review checklist is treated as maintained v0.2 material.
+- Weekly growth update: added `docs/role-selection-guide.md` to explain when to use manager, project lead, reviewer, subagent, and maintainer passes.
+- Linked the role-selection guide from README and the maintainer playbook.
+- Updated the roadmap wording so role-selection guidance is treated as maintained v0.2 material.
 
 ## Verification
 
@@ -68,17 +71,28 @@
   - `git diff --check`: passed.
   - Public-safety scan for local absolute paths, email addresses, token patterns, and secret assignment patterns: passed. The only match was the documented scan command in `docs/security-checklist.md`.
   - GitHub issues: checked with `gh issue list`; no open issues were found.
+- Role-selection weekly verification:
+  - `git fetch origin main`: passed.
+  - `gh issue list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open issues were found.
+  - `gh pr list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open PRs were found.
+  - `python -m unittest discover -s tests`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_role_selection_check`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_role_selection_check`: passed.
+  - `.tmp_role_selection_check`: removed after smoke test.
+  - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
+  - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, and docs: passed with no matches.
 
 ## Next Steps
 
-- Commit with `docs: add agent pr review checklist`.
+- Commit with `docs: add role selection guide`.
 - Push `main` to `origin/main`.
 - Watch GitHub Actions after push.
-- Next small maintenance item: add guidance for when to use manager, project lead, reviewer, and subagent roles.
+- Next small maintenance item: add an example GitHub Actions workflow that initializes a temporary target and validates it.
 
 ## Risks and Notes
 
 - No `.env`, token value, account credential, email address, or private path should be included.
 - Security docs mention tokens and `.env` only as warnings/checklist items.
 - The project is intentionally described as early-stage rather than mature.
+- Role names are documented as Markdown operating roles, not as an agent orchestration runtime.
 - Earlier root workspace pollution was cleaned up in a previous step; parent `HANDOFF.md` was not restored because no reliable original content was available from Git.

@@ -94,6 +94,7 @@ my-agent-project/
 6. **Release pass:** CI runs tests and `codex-workflow-kit check` against generated workflow examples.
 
 See [docs/maintainer-playbook.md](docs/maintainer-playbook.md) for PR review, issue triage, release prep, and handoff recovery scenarios.
+Use [docs/role-selection-guide.md](docs/role-selection-guide.md) when deciding whether a task needs a manager, project lead, reviewer, subagent, or maintainer pass.
 Use [docs/agent-pr-review-checklist.md](docs/agent-pr-review-checklist.md) before merging agent-authored pull requests.
 Use [docs/release-checklist.md](docs/release-checklist.md) when preparing a small public release.
 
@@ -144,6 +145,7 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   |-- maintainer-playbook.md
 |   |-- openai-oss-application.md
 |   |-- release-checklist.md
+|   |-- role-selection-guide.md
 |   `-- security-checklist.md
 |-- examples/
 |   |-- ai-project-layout.md

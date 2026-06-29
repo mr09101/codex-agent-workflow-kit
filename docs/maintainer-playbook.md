@@ -9,6 +9,8 @@ This playbook shows how an OSS maintainer can use Codex Agent Workflow Kit to ke
 - **Reviewer:** checks safety, scope, public docs, final artifacts, and release readiness.
 - **Maintainer:** owns final merge, release, and project direction.
 
+Use `docs/role-selection-guide.md` when deciding whether a task needs one role, a reviewer pass, or a bounded subagent split.
+
 ## Scenario 1: Issue Triage
 
 1. Read the issue and separate user-visible behavior from implementation guesses.

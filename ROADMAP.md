@@ -16,7 +16,7 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 - Maintain the release checklist template for small OSS packages.
 - Expand `check` with optional warnings for stale handoff files.
 - Maintain examples that show passing and failing workflow checks.
-- Document when to use manager, project lead, reviewer, and subagent roles.
+- Maintain role-selection guidance for manager, project lead, reviewer, subagent, and maintainer passes.
 
 ## v0.3: Template Packs
 
