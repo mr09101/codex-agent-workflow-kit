@@ -39,6 +39,7 @@ The goal is not to add ceremony. The goal is to make agent-assisted maintenance 
 - No runtime dependencies beyond Python 3.10+.
 - No network calls.
 - No generated secrets, credentials, or `.env` files.
+- No secrets required. `.env.example` is intentionally omitted because the CLI needs no API keys, tokens, accounts, or external service configuration.
 - No overwrite by default. Existing files are skipped unless `--force` is passed.
 - CI-friendly tests cover template creation, missing-file failures, missing-section failures, and no-overwrite behavior.
 - GitHub Actions smoke workflow validates a freshly generated workflow scaffold with `init` and `check`.
@@ -134,6 +135,8 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |-- codex_multi_agent_workflow_kit/
 |   |-- __init__.py
 |   `-- cli.py
+|-- AGENTS.md
+|-- WORKFLOW.md
 |-- templates/
 |   |-- AGENTS.md
 |   |-- WORKFLOW.md

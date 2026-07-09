@@ -2,7 +2,7 @@
 
 ## Current Status
 
-- Status: Weekly repo growth update prepared and locally verified: a GitHub Actions smoke workflow now validates a freshly generated workflow scaffold with `init` and `check`.
+- Status: LOW hygiene update complete locally: root repository operating docs added and no-secrets/no-env-example policy documented.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
 - Last updated: 2026-07-09.
@@ -40,6 +40,8 @@
 - Weekly growth update: added `.github/workflows/workflow-kit-smoke.yml` to initialize a temporary scaffold and validate it with `check`.
 - Linked the smoke workflow from README and the maintainer playbook.
 - Updated the roadmap wording so the GitHub Actions smoke workflow is treated as maintained v0.2 material.
+- LOW hygiene update: added root `AGENTS.md` and `WORKFLOW.md` for this repository's public maintainer/agent operating rules.
+- Clarified in README that no secrets are required and `.env.example` is intentionally omitted.
 
 ## Verification
 
@@ -94,6 +96,14 @@
   - `.tmp_workflow_kit_ci`: removed after smoke test.
   - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
   - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, docs, `.github`, and HANDOFF: passed. The only match was the documented scan command in `docs/security-checklist.md`.
+- LOW hygiene verification:
+  - `python -m unittest discover -s tests`: passed with bundled Python 3.12 runtime.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_low_hygiene_check`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_low_hygiene_check`: passed.
+  - `.tmp_low_hygiene_check`: removed after smoke test.
+  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`.
+  - `.env*` tracked/staged check: no `.env` or `.env.example` files were tracked or staged.
+  - LOW operating-doc review thread: created for public docs review.
 
 
 ## Next Steps
@@ -104,6 +114,7 @@
 ## Risks and Notes
 
 - No `.env`, token value, account credential, email address, or private path should be included.
+- `.env.example` is intentionally absent because this CLI project has no environment-variable setup.
 - Security docs mention tokens and `.env` only as warnings/checklist items.
 - The project is intentionally described as early-stage rather than mature.
 - Role names are documented as Markdown operating roles, not as an agent orchestration runtime.
