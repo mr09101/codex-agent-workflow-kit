@@ -48,6 +48,8 @@ python -m codex_multi_agent_workflow_kit.cli check .tmp_playbook_check
 
 Remove `.tmp_playbook_check` after the smoke test.
 
+The repository CI mirrors that generated-scaffold check in `.github/workflows/workflow-kit-smoke.yml`, so pull requests verify the same workflow shape maintainers run locally.
+
 For a fuller agent-authored pull request gate, use `docs/agent-pr-review-checklist.md`.
 
 ## Scenario 3: Release Prep

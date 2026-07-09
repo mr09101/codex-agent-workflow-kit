@@ -41,6 +41,7 @@ The goal is not to add ceremony. The goal is to make agent-assisted maintenance 
 - No generated secrets, credentials, or `.env` files.
 - No overwrite by default. Existing files are skipped unless `--force` is passed.
 - CI-friendly tests cover template creation, missing-file failures, missing-section failures, and no-overwrite behavior.
+- GitHub Actions smoke workflow validates a freshly generated workflow scaffold with `init` and `check`.
 - Templates cover manager/project lead/reviewer roles, handoff discipline, review gates, repo hygiene, and final-artifact handling.
 
 ## Quick Start
@@ -91,7 +92,7 @@ my-agent-project/
 3. **Project lead pass:** the lead edits files, runs tests, updates `HANDOFF.md`, and stages only related changes.
 4. **Reviewer pass:** a reviewer checks public docs, generated artifacts, security notes, and release readiness.
 5. **Final artifact pass:** user-facing outputs go in `FINAL_KEEP`; scratch files stay out of the final surface.
-6. **Release pass:** CI runs tests and `codex-workflow-kit check` against generated workflow examples.
+6. **Release pass:** CI runs tests and the workflow smoke job validates a freshly generated scaffold.
 
 See [docs/maintainer-playbook.md](docs/maintainer-playbook.md) for PR review, issue triage, release prep, and handoff recovery scenarios.
 Use [docs/role-selection-guide.md](docs/role-selection-guide.md) when deciding whether a task needs a manager, project lead, reviewer, subagent, or maintainer pass.
@@ -155,6 +156,8 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 `-- .github/
     |-- ISSUE_TEMPLATE/
     `-- workflows/
+        |-- ci.yml
+        `-- workflow-kit-smoke.yml
 ```
 
 ## OpenAI OSS Application Note

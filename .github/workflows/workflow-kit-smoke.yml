@@ -1,0 +1,26 @@
+name: Workflow Kit Smoke
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  init-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Initialize generated workflow scaffold
+        run: python -m codex_multi_agent_workflow_kit.cli init .tmp_workflow_kit_ci
+
+      - name: Validate generated workflow scaffold
+        run: python -m codex_multi_agent_workflow_kit.cli check .tmp_workflow_kit_ci

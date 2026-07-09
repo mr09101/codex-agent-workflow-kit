@@ -2,10 +2,10 @@
 
 ## Current Status
 
-- Status: Weekly repo growth update prepared and verified: role-selection guidance for manager, project lead, reviewer, subagent, and maintainer passes was added.
+- Status: Weekly repo growth update prepared and locally verified: a GitHub Actions smoke workflow now validates a freshly generated workflow scaffold with `init` and `check`.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
-- Last updated: 2026-06-29.
+- Last updated: 2026-07-09.
 
 ## Recent Changes
 
@@ -37,6 +37,9 @@
 - Weekly growth update: added `docs/role-selection-guide.md` to explain when to use manager, project lead, reviewer, subagent, and maintainer passes.
 - Linked the role-selection guide from README and the maintainer playbook.
 - Updated the roadmap wording so role-selection guidance is treated as maintained v0.2 material.
+- Weekly growth update: added `.github/workflows/workflow-kit-smoke.yml` to initialize a temporary scaffold and validate it with `check`.
+- Linked the smoke workflow from README and the maintainer playbook.
+- Updated the roadmap wording so the GitHub Actions smoke workflow is treated as maintained v0.2 material.
 
 ## Verification
 
@@ -81,13 +84,22 @@
   - `.tmp_role_selection_check`: removed after smoke test.
   - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
   - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, and docs: passed with no matches.
+- Workflow-smoke weekly verification:
+  - `git fetch origin main`: passed.
+  - `gh issue list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open issues were found.
+  - `gh pr list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open PRs were found.
+  - `python -m unittest discover -s tests`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_workflow_kit_ci`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_workflow_kit_ci`: passed.
+  - `.tmp_workflow_kit_ci`: removed after smoke test.
+  - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
+  - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, docs, `.github`, and HANDOFF: passed. The only match was the documented scan command in `docs/security-checklist.md`.
+
 
 ## Next Steps
 
-- Commit with `docs: add role selection guide`.
-- Push `main` to `origin/main`.
 - Watch GitHub Actions after push.
-- Next small maintenance item: add an example GitHub Actions workflow that initializes a temporary target and validates it.
+- Next small maintenance item: add guidance for using the kit with existing repositories without overwriting local conventions.
 
 ## Risks and Notes
 

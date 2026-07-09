@@ -17,6 +17,7 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 - Expand `check` with optional warnings for stale handoff files.
 - Maintain examples that show passing and failing workflow checks.
 - Maintain role-selection guidance for manager, project lead, reviewer, subagent, and maintainer passes.
+- Maintain the GitHub Actions smoke workflow that initializes a temporary target and validates it.
 
 ## v0.3: Template Packs
 
@@ -29,7 +30,6 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 
 - Machine-readable checklist output for CI.
 - Optional JSON summary mode for `check`.
-- Example GitHub Actions workflow that initializes a temporary target and validates it.
 - Public examples contributed by maintainers using the kit in real projects.
 
 ## Non-Goals
