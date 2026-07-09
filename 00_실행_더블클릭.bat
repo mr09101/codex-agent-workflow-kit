@@ -25,6 +25,6 @@ echo Python was not found. Please install Python 3.10+ and run this file again.
 :done
 echo.
 echo Example:
-echo   python -m codex_multi_agent_workflow_kit.cli check "D:\AI PROJECT\some-project"
+echo   python -m codex_multi_agent_workflow_kit.cli check ".\demo-project"
 echo.
 pause

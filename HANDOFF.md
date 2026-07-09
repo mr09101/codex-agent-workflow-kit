@@ -2,7 +2,7 @@
 
 ## Current Status
 
-- Status: LOW hygiene update complete locally: root repository operating docs added and no-secrets/no-env-example policy documented.
+- Status: MEDIUM security/operations hygiene update complete locally; ready for commit and push.
 - Local folder: codex-multi-agent-workflow-kit.
 - Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
 - Last updated: 2026-07-09.
@@ -42,6 +42,9 @@
 - Updated the roadmap wording so the GitHub Actions smoke workflow is treated as maintained v0.2 material.
 - LOW hygiene update: added root `AGENTS.md` and `WORKFLOW.md` for this repository's public maintainer/agent operating rules.
 - Clarified in README that no secrets are required and `.env.example` is intentionally omitted.
+- MEDIUM security/operations update: hardened `.gitignore` so `.env`, `.env.local`, `.env.example`, temporary smoke-check folders, logs, and local agent state folders stay untracked.
+- Clarified in `SECURITY.md` that the project requires no API keys, tokens, accounts, or external service configuration.
+- Reviewed `00_실행_더블클릭.bat`: it is a CLI help launcher only, does not start a server, and now uses a generic demo path in its example command.
 
 ## Verification
 
@@ -104,6 +107,16 @@
   - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`.
   - `.env*` tracked/staged check: no `.env` or `.env.example` files were tracked or staged.
   - LOW operating-doc review thread: created for public docs review.
+- MEDIUM security/operations verification:
+  - `python` was not available on PATH in the current shell, so the bundled Python 3.12 runtime was used.
+  - `python -m unittest discover -s tests`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_medium_security_check`: passed.
+  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_medium_security_check`: passed.
+  - `.tmp_medium_security_check`: removed after smoke test.
+  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`; no private path, email address, account credential, token value, or key assignment was found.
+  - `git check-ignore` confirmed `.env`, `.env.local`, `.env.example`, temporary check folders, and local agent state folders are ignored.
+  - `.env*`, `.agents`, and `.codex` tracked/staged checks: no sensitive or local agent-state files were tracked or staged.
+  - `git diff --check`: passed with normal working-tree line-ending warnings only.
 
 
 ## Next Steps
@@ -116,6 +129,9 @@
 - No `.env`, token value, account credential, email address, or private path should be included.
 - `.env.example` is intentionally absent because this CLI project has no environment-variable setup.
 - Security docs mention tokens and `.env` only as warnings/checklist items.
+- `FINAL_KEEP` is not required for this repository because it is a CLI/docs project and has no user-facing generated artifact to preserve.
+- No port reservation is required because this project does not run a web app or long-lived service; the batch file only prints CLI help.
+- External API stability is not applicable to the CLI itself because it performs no network calls.
 - The project is intentionally described as early-stage rather than mature.
 - Role names are documented as Markdown operating roles, not as an agent orchestration runtime.
 - Earlier root workspace pollution was cleaned up in a previous step; parent `HANDOFF.md` was not restored because no reliable original content was available from Git.

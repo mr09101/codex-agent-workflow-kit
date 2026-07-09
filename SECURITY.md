@@ -13,5 +13,6 @@ Use the repository's private vulnerability reporting feature if available. If no
 - The CLI does not call external services.
 - The CLI does not read or generate secrets.
 - The CLI does not create `.env` files.
+- No API keys, tokens, accounts, or external service configuration are required; `.env.example` is intentionally omitted.
 - Existing files are not overwritten unless `--force` is provided.
 - Templates must remain public-safe.
