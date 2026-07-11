@@ -41,6 +41,8 @@ The goal is not to add ceremony. The goal is to make agent-assisted maintenance 
 - No generated secrets, credentials, or `.env` files.
 - No secrets required. `.env.example` is intentionally omitted because the CLI needs no API keys, tokens, accounts, or external service configuration.
 - No overwrite by default. Existing files are skipped unless `--force` is passed.
+- Existing symlinks, junctions, and other reparse points in generated paths are rejected, including with `--force`.
+- Expected filesystem and UTF-8 errors return exit code `2` as one public-safe `ERROR:` line without a traceback.
 - CI-friendly tests cover template creation, missing-file failures, missing-section failures, and no-overwrite behavior.
 - GitHub Actions smoke workflow validates a freshly generated workflow scaffold with `init` and `check`.
 - Templates cover manager/project lead/reviewer roles, handoff discipline, review gates, repo hygiene, and final-artifact handling.
@@ -69,6 +71,9 @@ Use `--force` only when you intentionally want to refresh existing workflow file
 ```bash
 codex-workflow-kit init ./my-agent-project --force
 ```
+
+`--force` overwrites regular generated files only. It does not permit writes through
+symlinks, junctions, or other reparse points.
 
 ## What Gets Generated
 
@@ -107,7 +112,9 @@ The kit is intentionally small and conservative:
 - The CLI never calls external services.
 - The CLI never creates secrets, tokens, keys, credentials, or `.env` files.
 - `init` skips existing files by default.
+- `init` rejects a linked target root or linked/reparse path below it before writing.
 - `check` exits with code `1` when required files or sections are missing.
+- Expected path and encoding failures exit with code `2` and do not print a traceback.
 - Templates ask agents to record assumptions, verification commands, risks, and remaining work.
 - GitHub Actions can run the same tests used locally.
 

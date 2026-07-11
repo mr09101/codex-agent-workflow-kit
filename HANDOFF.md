@@ -2,136 +2,54 @@
 
 ## Current Status
 
-- Status: MEDIUM security/operations hygiene update complete locally; ready for commit and push.
-- Local folder: codex-multi-agent-workflow-kit.
-- Public repository: https://github.com/mr09101/codex-agent-workflow-kit.
-- Last updated: 2026-07-09.
+- Status: Security boundary changes implemented and verified; commit-ready review state.
+- Repository: `codex-multi-agent-workflow-kit`.
+- Last updated: 2026-07-11.
+- Latest existing commit: `117e4db15273babd7ce953c434b0a820b0edb86b` (`docs: harden repository operations guidance`).
+- Current work: intentionally uncommitted and must remain commit-ready; do not commit or push for this task.
 
 ## Recent Changes
 
-- Added a standard-library Python CLI with `init` and `check` commands.
-- Added tests for template initialization, validation failure, section checking, and overwrite behavior.
-- Added public-safe README, templates, contribution guide, security policy, example layout, OSS application draft, and CI workflow.
-- Polished README around the `codex-agent-workflow-kit` public repo name, operational-layer value proposition, safety model, review gates, handoffs, and final-artifact discipline.
-- Replaced application URL placeholders with the public repository URL.
-- Added first OSS growth materials:
-  - `ROADMAP.md`
-  - `docs/maintainer-playbook.md`
-  - `docs/security-checklist.md`
-  - `.github/ISSUE_TEMPLATE/workflow-pattern.md`
-  - `.github/ISSUE_TEMPLATE/bug_report.md`
-  - `.github/ISSUE_TEMPLATE/feature_request.md`
-- Expanded README for OSS maintainers using Codex, including CI badge, maintainer workflow example, safety model, early-stage status, and roadmap link.
-- Created a separate growth-document review thread for public OSS quality review.
-- Manual growth update: added a concise "What This Actually Does" section to README and a new `docs/core-capability.md` page explaining the exact `init`/`check` scaffold-and-validate workflow.
-- Applied core-capability review feedback by clarifying that manager/project lead/reviewer are Markdown workflow roles, not an orchestration runtime, and that `check` validates structure rather than implementation quality.
-- Weekly growth update: added `examples/check-output.md` with passing and failing `init`/`check` output examples for maintainers.
-- Linked the new check-output examples from README quick start and added the file to the README folder structure.
-- Updated the roadmap wording so the passing/failing check examples are treated as something to keep maintained.
-- Weekly growth update: added `docs/release-checklist.md` for small public release preparation.
-- Linked the release checklist from README and the maintainer playbook.
-- Updated the roadmap wording so the release checklist is treated as maintained v0.2 material.
-- Weekly growth update: added `docs/agent-pr-review-checklist.md` for reviewing agent-authored pull requests.
-- Linked the agent pull request review checklist from README and the maintainer playbook.
-- Updated the roadmap wording so the review checklist is treated as maintained v0.2 material.
-- Weekly growth update: added `docs/role-selection-guide.md` to explain when to use manager, project lead, reviewer, subagent, and maintainer passes.
-- Linked the role-selection guide from README and the maintainer playbook.
-- Updated the roadmap wording so role-selection guidance is treated as maintained v0.2 material.
-- Weekly growth update: added `.github/workflows/workflow-kit-smoke.yml` to initialize a temporary scaffold and validate it with `check`.
-- Linked the smoke workflow from README and the maintainer playbook.
-- Updated the roadmap wording so the GitHub Actions smoke workflow is treated as maintained v0.2 material.
-- LOW hygiene update: added root `AGENTS.md` and `WORKFLOW.md` for this repository's public maintainer/agent operating rules.
-- Clarified in README that no secrets are required and `.env.example` is intentionally omitted.
-- MEDIUM security/operations update: hardened `.gitignore` so `.env`, `.env.local`, `.env.example`, temporary smoke-check folders, logs, and local agent state folders stay untracked.
-- Clarified in `SECURITY.md` that the project requires no API keys, tokens, accounts, or external service configuration.
-- Reviewed `00_실행_더블클릭.bat`: it is a CLI help launcher only, does not start a server, and now uses a generic demo path in its example command.
+- Added TDD regression coverage for file symlinks, directory junctions/reparse points, a linked target root, path conflicts, and invalid UTF-8 input.
+- Hardened `init` so existing symlinks, junctions, and other reparse points cannot redirect writes outside the target root, including with `--force`.
+- Added canonical target-root containment checks and repeated validation before writes.
+- Converted expected path, filesystem, and UTF-8 exceptions into one public-safe `ERROR:` line with exit code `2`, without a default traceback.
+- Added top-level `permissions: contents: read` to both GitHub Actions workflows while retaining Python 3.10-3.12 unit tests and the Python 3.12 smoke workflow.
+- Updated README and SECURITY to describe only the implemented behavior and the concurrent-mutation limitation.
+- Added `PROJECT_BLUEPRINT.md` with the required ten project-governance items.
 
 ## Verification
 
-- Final manual-update verification:
-  - `python -m unittest discover -s tests`: passed with bundled Python 3.12 runtime.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_manual_growth_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_manual_growth_check`: passed.
-  - `.tmp_manual_growth_check`: removed after smoke test.
-  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`; no private path, email address, account credential, or secret assignment value was found.
-- Growth document review thread: completed. Reviewer noted that the docs look practical for OSS maintainers, describe safety gates without overclaiming, and clearly present the project as early-stage.
-- Core capability review thread: created for README/user-understanding review.
-- Weekly growth verification:
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_weekly_repo_growth_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_weekly_repo_growth_check`: passed.
-  - `.tmp_weekly_repo_growth_check`: removed after smoke test.
-  - Public-safety scan for local absolute paths and token patterns: passed with no matches.
-  - GitHub issues: checked with `gh issue list`; no open issues were found.
-- Release-checklist weekly verification:
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_release_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_release_check`: passed.
-  - `.tmp_release_check`: removed after smoke test.
-  - `git diff --check`: passed.
-  - Public-safety scan for local absolute paths and token patterns: passed with no matches.
-  - GitHub issues: checked with `gh issue list`; no open issues were found.
-- Agent pull request checklist weekly verification:
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_agent_pr_review`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_agent_pr_review`: passed.
-  - `.tmp_agent_pr_review`: removed after smoke test.
-  - `git diff --check`: passed.
-  - Public-safety scan for local absolute paths, email addresses, token patterns, and secret assignment patterns: passed. The only match was the documented scan command in `docs/security-checklist.md`.
-  - GitHub issues: checked with `gh issue list`; no open issues were found.
-- Role-selection weekly verification:
-  - `git fetch origin main`: passed.
-  - `gh issue list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open issues were found.
-  - `gh pr list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open PRs were found.
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_role_selection_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_role_selection_check`: passed.
-  - `.tmp_role_selection_check`: removed after smoke test.
-  - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
-  - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, and docs: passed with no matches.
-- Workflow-smoke weekly verification:
-  - `git fetch origin main`: passed.
-  - `gh issue list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open issues were found.
-  - `gh pr list --repo mr09101/codex-agent-workflow-kit --state open --limit 20`: passed; no open PRs were found.
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_workflow_kit_ci`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_workflow_kit_ci`: passed.
-  - `.tmp_workflow_kit_ci`: removed after smoke test.
-  - `git diff --check`: passed; Git reported normal LF-to-CRLF working-tree warnings only.
-  - Public-safety scan for local absolute paths and secret-like patterns across README, ROADMAP, docs, `.github`, and HANDOFF: passed. The only match was the documented scan command in `docs/security-checklist.md`.
-- LOW hygiene verification:
-  - `python -m unittest discover -s tests`: passed with bundled Python 3.12 runtime.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_low_hygiene_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_low_hygiene_check`: passed.
-  - `.tmp_low_hygiene_check`: removed after smoke test.
-  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`.
-  - `.env*` tracked/staged check: no `.env` or `.env.example` files were tracked or staged.
-  - LOW operating-doc review thread: created for public docs review.
-- MEDIUM security/operations verification:
-  - `python` was not available on PATH in the current shell, so the bundled Python 3.12 runtime was used.
-  - `python -m unittest discover -s tests`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli init .tmp_medium_security_check`: passed.
-  - `python -m codex_multi_agent_workflow_kit.cli check .tmp_medium_security_check`: passed.
-  - `.tmp_medium_security_check`: removed after smoke test.
-  - Public-safety scan: passed. The only match was the documented scan command in `docs/security-checklist.md`; no private path, email address, account credential, token value, or key assignment was found.
-  - `git check-ignore` confirmed `.env`, `.env.local`, `.env.example`, temporary check folders, and local agent state folders are ignored.
-  - `.env*`, `.agents`, and `.codex` tracked/staged checks: no sensitive or local agent-state files were tracked or staged.
-  - `git diff --check`: passed with normal working-tree line-ending warnings only.
+Use the bundled Python runtime:
 
+```powershell
+& '<bundled-python>' -m unittest discover -s tests -v
+& '<bundled-python>' -m compileall -q codex_multi_agent_workflow_kit tests
+& '<bundled-python>' -m codex_multi_agent_workflow_kit.cli init <temporary-target>
+& '<bundled-python>' -m codex_multi_agent_workflow_kit.cli check <temporary-target>
+git diff --check
+git status --short --branch
+```
+
+- TDD RED: junction/reparse boundary tests failed because `--force` followed links; path conflict and invalid UTF-8 tests raised uncaught exceptions.
+- Focused GREEN: 4 tests passed; 1 file-symlink test was skipped because Windows symlink creation privilege was unavailable.
+- Full interim suite: 8 tests passed with 1 explicit Windows file-symlink skip.
+- Final unittest: 9 tests completed with 8 passed and 1 explicit Windows file-symlink permission skip.
+- Final compileall: passed for the package and tests.
+- Final smoke: `init=0`, `check=0`, existing file preserved without `--force`, junction `--force` rejected, and the outside sentinel remained unchanged.
+- Smoke targets were created outside the repository in the operating-system temporary area.
 
 ## Next Steps
 
-- Watch GitHub Actions after push.
-- Next small maintenance item: add guidance for using the kit with existing repositories without overwriting local conventions.
+- Review the commit-ready diff and create a conventional security-fix commit when authorized.
+- Run the Python 3.10-3.12 GitHub Actions matrix after a future push.
+- Keep all current changes uncommitted for maintainer review in this task.
 
 ## Risks and Notes
 
-- No `.env`, token value, account credential, email address, or private path should be included.
-- `.env.example` is intentionally absent because this CLI project has no environment-variable setup.
-- Security docs mention tokens and `.env` only as warnings/checklist items.
-- `FINAL_KEEP` is not required for this repository because it is a CLI/docs project and has no user-facing generated artifact to preserve.
-- No port reservation is required because this project does not run a web app or long-lived service; the batch file only prints CLI help.
-- External API stability is not applicable to the CLI itself because it performs no network calls.
-- The project is intentionally described as early-stage rather than mature.
-- Role names are documented as Markdown operating roles, not as an agent orchestration runtime.
-- Earlier root workspace pollution was cleaned up in a previous step; parent `HANDOFF.md` was not restored because no reliable original content was available from Git.
+- Do not include or stage `.env*`, logs, user data, local agent state, credentials, personal paths, account details, or email addresses.
+- Existing filesystem links and reparse points are rejected. The CLI is not a sandbox against an untrusted process that mutates the target concurrently between validation and write.
+- The CLI performs no network calls and has no web UI, server, external API, database, authentication, or secret configuration.
+- UX review is currently not applicable. Reassess if a web, desktop, or interactive TUI surface is added.
+- `FINAL_KEEP` is not created for this source repository because there is no user-facing rendered/exported artifact. Reassess if reports, images, videos, decks, or exports become project deliverables.
+- wiki/Obsidian and files outside this repository are out of scope and were not modified.

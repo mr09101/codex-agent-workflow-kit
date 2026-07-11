@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import os
+import stat
 import sys
 from pathlib import Path
 
@@ -156,19 +158,73 @@ REQUIRED_SECTIONS = {
     ],
 }
 
+FILE_ATTRIBUTE_REPARSE_POINT = 0x0400
+
+
+class CliError(Exception):
+    """A public-safe command error that does not expose local paths."""
+
+
+def _absolute_path(value: str) -> Path:
+    return Path(os.path.abspath(Path(value).expanduser()))
+
+
+def _is_filesystem_link(path: Path) -> bool:
+    try:
+        metadata = path.lstat()
+    except FileNotFoundError:
+        return False
+
+    attributes = getattr(metadata, "st_file_attributes", 0)
+    return stat.S_ISLNK(metadata.st_mode) or bool(
+        attributes & FILE_ATTRIBUTE_REPARSE_POINT
+    )
+
+
+def _validate_target_root(target: Path) -> Path:
+    if _is_filesystem_link(target):
+        raise CliError("Unsafe filesystem link at target root.")
+    return target.resolve(strict=True)
+
+
+def _validate_destination(target: Path, root: Path, relative_path: str) -> Path:
+    destination = target / relative_path
+    current = target
+    for part in Path(relative_path).parts:
+        current /= part
+        if _is_filesystem_link(current):
+            raise CliError(f"Unsafe filesystem link at {relative_path}.")
+
+    try:
+        destination.resolve(strict=False).relative_to(root)
+    except ValueError as error:
+        raise CliError(f"Path escapes target root: {relative_path}.") from error
+
+    return destination
+
 
 def init_target(target: Path, *, force: bool = False) -> tuple[list[str], list[str]]:
+    if _is_filesystem_link(target):
+        raise CliError("Unsafe filesystem link at target root.")
     target.mkdir(parents=True, exist_ok=True)
+    root = _validate_target_root(target)
+
+    for relative_path in TEMPLATES:
+        _validate_destination(target, root, relative_path)
+
     written: list[str] = []
     skipped: list[str] = []
 
     for relative_path, content in TEMPLATES.items():
-        destination = target / relative_path
+        root = _validate_target_root(target)
+        destination = _validate_destination(target, root, relative_path)
         if destination.exists() and not force:
             skipped.append(relative_path)
             continue
 
         destination.parent.mkdir(parents=True, exist_ok=True)
+        root = _validate_target_root(target)
+        destination = _validate_destination(target, root, relative_path)
         destination.write_text(content, encoding="utf-8", newline="\n")
         written.append(relative_path)
 
@@ -177,9 +233,10 @@ def init_target(target: Path, *, force: bool = False) -> tuple[list[str], list[s
 
 def check_target(target: Path) -> list[str]:
     errors: list[str] = []
+    root = _validate_target_root(target)
 
     for relative_path, sections in REQUIRED_SECTIONS.items():
-        path = target / relative_path
+        path = _validate_destination(target, root, relative_path)
         if not path.is_file():
             errors.append(f"Missing required file: {relative_path}")
             continue
@@ -203,7 +260,7 @@ def _print_list(title: str, values: list[str]) -> None:
 
 
 def run_init(args: argparse.Namespace) -> int:
-    target = Path(args.target).expanduser().resolve()
+    target = _absolute_path(args.target)
     written, skipped = init_target(target, force=args.force)
     print(f"Initialized workflow templates in {target}")
     _print_list("Created or updated", written)
@@ -214,7 +271,7 @@ def run_init(args: argparse.Namespace) -> int:
 
 
 def run_check(args: argparse.Namespace) -> int:
-    target = Path(args.target).expanduser().resolve()
+    target = _absolute_path(args.target)
     errors = check_target(target)
     if errors:
         print(f"Workflow check failed for {target}")
@@ -248,7 +305,23 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except CliError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+    except UnicodeError:
+        print("ERROR: Required workflow file is not valid UTF-8.", file=sys.stderr)
+    except PermissionError:
+        print("ERROR: Permission denied during filesystem operation.", file=sys.stderr)
+    except FileExistsError:
+        print("ERROR: Target conflicts with an existing filesystem entry.", file=sys.stderr)
+    except NotADirectoryError:
+        print("ERROR: A target path component is not a directory.", file=sys.stderr)
+    except IsADirectoryError:
+        print("ERROR: A required file path is an existing directory.", file=sys.stderr)
+    except OSError:
+        print("ERROR: Filesystem operation failed.", file=sys.stderr)
+    return 2
 
 
 if __name__ == "__main__":
