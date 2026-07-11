@@ -2,11 +2,11 @@
 
 ## Current Status
 
-- Status: Security boundary changes implemented and verified; commit-ready review state.
+- Status: Security boundary changes implemented, verified, and committed.
 - Repository: `codex-multi-agent-workflow-kit`.
 - Last updated: 2026-07-11.
-- Latest existing commit: `117e4db15273babd7ce953c434b0a820b0edb86b` (`docs: harden repository operations guidance`).
-- Current work: intentionally uncommitted and must remain commit-ready; do not commit or push for this task.
+- Latest implementation commit: `88787a8225ce269794edfbb508bb5216d2a12e44` (`fix: harden workflow template paths`).
+- Current work: HANDOFF metadata synchronization is the only pending local change.
 
 ## Recent Changes
 
@@ -41,9 +41,7 @@ git status --short --branch
 
 ## Next Steps
 
-- Review the commit-ready diff and create a conventional security-fix commit when authorized.
 - Run the Python 3.10-3.12 GitHub Actions matrix after a future push.
-- Keep all current changes uncommitted for maintainer review in this task.
 
 ## Risks and Notes
 
