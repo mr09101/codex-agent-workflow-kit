@@ -75,6 +75,11 @@ codex-workflow-kit init ./my-agent-project --force
 `--force` overwrites regular generated files only. It does not permit writes through
 symlinks, junctions, or other reparse points.
 
+Adopting the kit in a repository that already has agent or maintainer guidance?
+Follow [the existing-repository adoption guide](docs/existing-repository-adoption.md)
+to preview templates, preserve local conventions, and merge required headings
+without replacing whole files.
+
 ## What Gets Generated
 
 ```text
@@ -153,6 +158,7 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |-- docs/
 |   |-- core-capability.md
 |   |-- agent-pr-review-checklist.md
+|   |-- existing-repository-adoption.md
 |   |-- maintainer-playbook.md
 |   |-- openai-oss-application.md
 |   |-- release-checklist.md

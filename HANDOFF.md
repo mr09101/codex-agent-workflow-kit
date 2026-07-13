@@ -2,14 +2,16 @@
 
 ## Current Status
 
-- Status: Security boundary changes implemented, verified, and committed.
+- Status: Existing-repository adoption guidance implemented and verified; ready to commit.
 - Repository: `codex-multi-agent-workflow-kit`.
-- Last updated: 2026-07-11.
-- Latest implementation commit: `88787a8225ce269794edfbb508bb5216d2a12e44` (`fix: harden workflow template paths`).
-- Current work: HANDOFF metadata synchronization is the only pending local change.
+- Last updated: 2026-07-13.
+- Latest baseline commit: `5842748` (`docs: record workflow kit audit completion`).
+- Current work: Document safe adoption in repositories that already have local agent and maintainer conventions.
 
 ## Recent Changes
 
+- Added a step-by-step existing-repository adoption guide that previews templates, uses no-overwrite initialization, and merges required headings manually.
+- Linked the guide from README and marked the corresponding roadmap item as maintained.
 - Added TDD regression coverage for file symlinks, directory junctions/reparse points, a linked target root, path conflicts, and invalid UTF-8 input.
 - Hardened `init` so existing symlinks, junctions, and other reparse points cannot redirect writes outside the target root, including with `--force`.
 - Added canonical target-root containment checks and repeated validation before writes.
@@ -19,6 +21,12 @@
 - Added `PROJECT_BLUEPRINT.md` with the required ten project-governance items.
 
 ## Verification
+
+- Current documentation change (2026-07-13):
+  - `python -m unittest discover -s tests -v`: passed (9 tests, 1 explicit Windows symlink-permission skip).
+  - Fresh `init` and `check` smoke commands: passed.
+  - Temporary smoke folder removal and README link target check: passed.
+  - `git diff --check` and scoped public-safety scan: passed.
 
 Use the bundled Python runtime:
 
@@ -41,7 +49,7 @@ git status --short --branch
 
 ## Next Steps
 
-- Run the Python 3.10-3.12 GitHub Actions matrix after a future push.
+- Consider adding optional stale-handoff warnings to `check` without changing its default pass/fail behavior.
 
 ## Risks and Notes
 
