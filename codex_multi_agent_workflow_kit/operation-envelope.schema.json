@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/codex-workflow-kit/operation-envelope.schema.json",
+  "title": "OperationEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "operation_id",
+    "idempotency_key",
+    "parent_session_id",
+    "delegation_owner",
+    "delegation_depth",
+    "cwd_realpath",
+    "deadline_at"
+  ],
+  "properties": {
+    "operation_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 256},
+    "parent_session_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+    "delegation_owner": {
+      "enum": ["auto_ultra", "visible_thread", "internal_subagent", "claude_codex"]
+    },
+    "delegation_depth": {"type": "integer", "minimum": 0, "maximum": 8},
+    "cwd_realpath": {"type": "string", "minLength": 1},
+    "deadline_at": {"type": "string", "format": "date-time"}
+  }
+}

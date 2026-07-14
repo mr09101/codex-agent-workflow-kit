@@ -2,13 +2,18 @@
 
 ## Current Status
 
-- Status: Existing-repository adoption guidance implemented and verified; ready to commit.
+- Status: P0 harness safety source implemented and isolated fixtures verified; live deployment remains blocked behind a separate approval gate.
 - Repository: `codex-multi-agent-workflow-kit`.
-- Last updated: 2026-07-13.
-- Latest baseline commit: `5842748` (`docs: record workflow kit audit completion`).
-- Current work: Document safe adoption in repositories that already have local agent and maintainer conventions.
+- Last updated: 2026-07-15.
+- Latest baseline commit: `f758e9553e44a9828f582b693f57cfeed8582006` (`docs: add existing repository adoption guide`).
+- Current work: Provide the canonical envelope/model policy and a versioned, fixture-bounded skill-sync/verify source for independent P0 QA.
 
 ## Recent Changes
+
+- Added the exact seven-field operation envelope, canonical cwd/delegation/deadline validation, machine-readable schemas, and shared error codes.
+- Added the versioned role-to-model/thinking/fallback/capability resolver with exact Sol/Terra/Luna assignments, deterministic security/design promotion, semantic 5.9/5.10 comparison, and structured `UNAVAILABLE`.
+- Added OS-temp-only skill sync and verify production CLI routes with process lock, staging, full-tree manifests, atomic swap/rollback, `.agents` support, shadow hard-fail, heartbeat output, and explicit `WSL_UNAVAILABLE` separation.
+- Added RED-to-GREEN fixtures for FX-09 through FX-14 and the common contract surfaces. No live runtime root, Vault, WSL, watcher, hook, plugin cache, or user config was accessed or changed.
 
 - Added a step-by-step existing-repository adoption guide that previews templates, uses no-overwrite initialization, and merges required headings manually.
 - Linked the guide from README and marked the corresponding roadmap item as maintained.
@@ -21,6 +26,14 @@
 - Added `PROJECT_BLUEPRINT.md` with the required ten project-governance items.
 
 ## Verification
+
+- P0 source verification (2026-07-15):
+  - Baseline RED: missing contract modules and CLI routes raised `ModuleNotFoundError` or argparse invalid choice; additional RED captured 25-hour deadlines, incomplete policy outputs, missing heartbeat/verify route, overlapping targets, and directory shadow conflicts.
+  - Focused GREEN: P0 CLI 7/7; skill-sync 9/9.
+  - Full unittest: 36 tests completed successfully with 1 explicit Windows file-symlink privilege skip.
+  - `python -m compileall -q codex_multi_agent_workflow_kit tests`: passed.
+  - `git diff --check`: passed.
+  - Temp apply smoke: apply mode completed, verify returned true, and the three target manifests were identical.
 
 - Current documentation change (2026-07-13):
   - `python -m unittest discover -s tests -v`: passed (9 tests, 1 explicit Windows symlink-permission skip).
@@ -49,7 +62,8 @@ git status --short --branch
 
 ## Next Steps
 
-- Consider adding optional stale-handoff warnings to `check` without changing its default pass/fail behavior.
+- Independent QA should rerun FX-01 through FX-14 using the implementation handoff under `D:\AI PROJECT\.codex-jobs\skill-harness-p0`.
+- Do not connect this source to live skill roots or automation until the owner approves a deployment plan with backup, rollback, version, and downtime evidence.
 
 ## Risks and Notes
 
@@ -59,3 +73,5 @@ git status --short --branch
 - UX review is currently not applicable. Reassess if a web, desktop, or interactive TUI surface is added.
 - `FINAL_KEEP` is not created for this source repository because there is no user-facing rendered/exported artifact. Reassess if reports, images, videos, decks, or exports become project deliverables.
 - wiki/Obsidian and files outside this repository are out of scope and were not modified.
+- The P0 sync/verify implementation is intentionally limited to OS temporary fixtures; it is not the active Windows watcher or WSL sync implementation.
+- WSL was not installed or probed. Its source-stage heartbeat state is `WSL_UNAVAILABLE`.

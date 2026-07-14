@@ -32,3 +32,6 @@ codex-workflow-kit = "codex_multi_agent_workflow_kit.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["codex_multi_agent_workflow_kit*"]
+
+[tool.setuptools.package-data]
+codex_multi_agent_workflow_kit = ["*.json"]

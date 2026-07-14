@@ -47,6 +47,18 @@ The goal is not to add ceremony. The goal is to make agent-assisted maintenance 
 - GitHub Actions smoke workflow validates a freshly generated workflow scaffold with `init` and `check`.
 - Templates cover manager/project lead/reviewer roles, handoff discipline, review gates, repo hygiene, and final-artifact handling.
 
+## P0 Harness Safety Core (Source Stage)
+
+This checkout also contains an opt-in, dependency-free safety core for harness adapters. It is source code for review and isolated QA, not an installed orchestrator or a live skill-sync replacement.
+
+- `validate-envelope` enforces the seven-field metadata-only operation envelope.
+- `harness-resolve` applies the versioned role/model/thinking/capability policy and returns structured `UNAVAILABLE` instead of guessing.
+- `skill-sync` and `skill-verify` are hard-bounded to the operating-system temporary directory. They require `.claude`, `.codex`, and `.agents` fixture targets, use full-tree manifests, and fail closed on path, lock, or shadow conflicts.
+- Sync and verify results include metadata-only heartbeat fields. WSL is reported separately as `WSL_UNAVAILABLE`; no WSL probe or live runtime access is performed.
+- GPT-5.4 and GPT-5.5 appear only in explicitly historical policy metadata and are not active resolver dependencies.
+
+The live Vault, runtime skill roots, plugin cache, hooks, watchers, and startup entries are outside these commands' allowed boundary. Moving this source into production requires a separate backup, rollback, and deployment approval.
+
 ## Quick Start
 
 Run from a local checkout:
@@ -146,7 +158,14 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 .
 |-- codex_multi_agent_workflow_kit/
 |   |-- __init__.py
-|   `-- cli.py
+|   |-- cli.py
+|   |-- contracts.py
+|   |-- envelope.py
+|   |-- model_policy.py
+|   |-- skill_sync.py
+|   |-- harness-contract.schema.json
+|   |-- model-policy.json
+|   `-- operation-envelope.schema.json
 |-- AGENTS.md
 |-- WORKFLOW.md
 |-- templates/
@@ -168,7 +187,12 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   |-- ai-project-layout.md
 |   `-- check-output.md
 |-- tests/
-|   `-- test_cli.py
+|   |-- test_cli.py
+|   |-- test_contracts.py
+|   |-- test_envelope.py
+|   |-- test_model_policy.py
+|   |-- test_p0_cli.py
+|   `-- test_skill_sync.py
 `-- .github/
     |-- ISSUE_TEMPLATE/
     `-- workflows/

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/codex-workflow-kit/harness-contract.schema.json",
+  "$defs": {
+    "error_code": {
+      "type": "string",
+      "enum": [
+        "UNAVAILABLE",
+        "IDEMPOTENCY_CONFLICT",
+        "STALE_RESUME",
+        "SHADOW_CONFLICT",
+        "INVALID_ENVELOPE"
+      ]
+    },
+    "delegation_owner": {
+      "type": "string",
+      "enum": ["auto_ultra", "visible_thread", "internal_subagent", "claude_codex"]
+    }
+  }
+}
