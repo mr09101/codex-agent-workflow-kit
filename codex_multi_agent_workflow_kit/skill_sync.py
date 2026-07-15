@@ -253,7 +253,14 @@ def _validate_roots(
         name: _bounded_path(path, boundary, must_exist=False)
         for name, path in sorted(outputs.items())
     }
-    paths = [("source", safe_source), *sorted(safe_outputs.items())]
+    _validate_non_overlapping_roots(safe_source, safe_outputs)
+    return safe_source, safe_outputs, boundary
+
+
+def _validate_non_overlapping_roots(
+    source: Path, outputs: Mapping[str, Path]
+) -> None:
+    paths = [("source", source), *sorted(outputs.items())]
     for index, (left_name, left_path) in enumerate(paths):
         for right_name, right_path in paths[index + 1 :]:
             if (
@@ -264,7 +271,61 @@ def _validate_roots(
                 raise SkillSyncError(
                     f"Skill roots overlap ({left_name}, {right_name}); refusing ambiguous swap."
                 )
-    return safe_source, safe_outputs, boundary
+
+
+def _approved_path(path: Path, *, must_exist: bool) -> Path:
+    absolute = Path(os.path.abspath(path))
+    resolved = absolute.resolve(strict=must_exist)
+    current = Path(absolute.anchor)
+    for part in absolute.parts[1:]:
+        current /= part
+        if current.exists() and _is_link(current):
+            raise SkillSyncError(
+                "An approved sync path contains a filesystem link or reparse point."
+            )
+    return resolved
+
+
+def _validate_approved_roots(
+    source: Path,
+    outputs: Mapping[str, Path],
+    approved_roots: Mapping[str, Path],
+    lock_path: Path,
+) -> tuple[Path, dict[str, Path], Path]:
+    expected_labels = {"source", *REQUIRED_ROOTS}
+    if set(outputs) != REQUIRED_ROOTS or set(approved_roots) != expected_labels:
+        raise SkillSyncError(
+            "Approved source adapter requires exactly source, claude, codex, and agents roots."
+        )
+    safe_source = _approved_path(source, must_exist=True)
+    if not safe_source.is_dir():
+        raise SkillSyncError("Canonical source must be a directory.")
+    _assert_no_links(safe_source)
+    safe_outputs = {
+        name: _approved_path(path, must_exist=False)
+        for name, path in sorted(outputs.items())
+    }
+    actual = {"source": safe_source, **safe_outputs}
+    approved = {
+        name: _approved_path(path, must_exist=name == "source")
+        for name, path in sorted(approved_roots.items())
+    }
+    for name in sorted(expected_labels):
+        if actual[name] != approved[name]:
+            raise SkillSyncError(
+                f"Approved real-root mismatch for {name}; refusing source adapter operation."
+            )
+    _validate_non_overlapping_roots(safe_source, safe_outputs)
+
+    safe_lock = _approved_path(lock_path, must_exist=False)
+    if not safe_lock.parent.is_dir() or _is_link(safe_lock.parent):
+        raise SkillSyncError("Approved process-lock parent must be an existing real directory.")
+    if any(
+        safe_lock == root or _is_relative_to(safe_lock, root)
+        for root in actual.values()
+    ):
+        raise SkillSyncError("Process lock cannot be placed inside a skill root.")
+    return safe_source, safe_outputs, safe_lock
 
 
 def _is_relative_to(path: Path, parent: Path) -> bool:
@@ -418,6 +479,12 @@ def verify_skill_roots(
     source: Path, outputs: Mapping[str, Path], *, fixture_root: Path
 ) -> VerificationResult:
     safe_source, safe_outputs, _ = _validate_roots(source, outputs, fixture_root)
+    return _verify_validated_roots(safe_source, safe_outputs)
+
+
+def _verify_validated_roots(
+    safe_source: Path, safe_outputs: Mapping[str, Path]
+) -> VerificationResult:
     _raise_shadow_conflicts(safe_source, safe_outputs)
     expected = build_tree_manifest(safe_source)
     actual_manifests = {
@@ -473,17 +540,48 @@ def _fault(requested: str | None, step: str) -> None:
         raise SkillSyncError(f"Injected {step} failure.")
 
 
-def sync_skill_roots(
-    source: Path,
-    outputs: Mapping[str, Path],
-    *,
-    fixture_root: Path,
-    apply: bool = False,
-    fault_step: str | None = None,
-) -> SyncResult:
-    """Dry-run or atomically replace all three fixture runtime roots."""
+def _fsync_directory(directory: Path) -> None:
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(directory, os.O_RDONLY)
+        os.fsync(descriptor)
+    except OSError:
+        # Windows may reject directory handles; manifest verification still provides
+        # the fail-closed integrity boundary.
+        pass
+    finally:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
 
-    safe_source, safe_outputs, boundary = _validate_roots(source, outputs, fixture_root)
+
+def _fsync_tree(root: Path) -> None:
+    for item in sorted(path for path in root.rglob("*") if path.is_file()):
+        with item.open("rb") as stream:
+            try:
+                os.fsync(stream.fileno())
+            except OSError:
+                # Some bundled Windows runtimes reject fsync on read-only handles.
+                pass
+    for directory in sorted(
+        (path for path in root.rglob("*") if path.is_dir()),
+        key=lambda path: len(path.parts),
+        reverse=True,
+    ):
+        _fsync_directory(directory)
+    _fsync_directory(root)
+
+
+def _sync_validated_roots(
+    safe_source: Path,
+    safe_outputs: Mapping[str, Path],
+    *,
+    lock_path: Path,
+    apply: bool,
+    fault_step: str | None,
+) -> SyncResult:
     source_manifest = build_tree_manifest(safe_source)
     _skill_hashes(safe_source)
     if not apply:
@@ -497,17 +595,18 @@ def sync_skill_roots(
             completed_at=_timestamp(),
         )
 
-    lock_path = boundary / ".skill-sync.lock"
     token = uuid.uuid4().hex
     stages: dict[str, Path] = {}
     backups: dict[str, Path | None] = {}
     swapped: list[str] = []
+    commit_verified = False
     with _ProcessLock(lock_path):
         try:
             for name, target in sorted(safe_outputs.items()):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 stage = target.parent / f".{target.name}.stage-{token}"
                 shutil.copytree(safe_source, stage, copy_function=shutil.copy2)
+                _fsync_tree(stage)
                 stages[name] = stage
             _fault(fault_step, "copy")
             _fault(fault_step, "stage")
@@ -525,13 +624,12 @@ def sync_skill_roots(
                 else:
                     backups[name] = None
                 stages[name].replace(target)
+                _fsync_directory(target.parent)
                 swapped.append(name)
                 if fault_step == "swap" and len(swapped) == 1:
                     _fault(fault_step, "swap")
 
-            verification = verify_skill_roots(
-                safe_source, safe_outputs, fixture_root=boundary
-            )
+            verification = _verify_validated_roots(safe_source, safe_outputs)
             if not verification.ok:
                 raise SkillSyncError("Post-swap full-tree verification failed.")
             _fault(fault_step, "post-verify")
@@ -540,6 +638,8 @@ def sync_skill_roots(
                 name: build_tree_manifest(target).sha256
                 for name, target in sorted(safe_outputs.items())
             }
+            commit_verified = True
+            _fault(fault_step, "cleanup")
             for backup in backups.values():
                 if backup is not None:
                     _remove_tree(backup)
@@ -550,12 +650,21 @@ def sync_skill_roots(
                 completed_at=_timestamp(),
             )
         except Exception as error:
+            if commit_verified:
+                if isinstance(error, SkillSyncError):
+                    raise SkillSyncError(
+                        "Verified sync commit is preserved; backup cleanup is incomplete."
+                    ) from error
+                raise SkillSyncError(
+                    "Verified sync commit is preserved; backup cleanup failed."
+                ) from error
             for name in reversed(swapped):
                 target = safe_outputs[name]
                 _remove_tree(target)
                 backup = backups[name]
                 if backup is not None and backup.exists():
                     backup.replace(target)
+                _fsync_directory(target.parent)
             if isinstance(error, SkillSyncError):
                 raise
             raise SkillSyncError("Skill sync failed and original targets were restored.") from error
@@ -563,5 +672,56 @@ def sync_skill_roots(
             for stage in stages.values():
                 _remove_tree(stage)
             for name, backup in backups.items():
-                if backup is not None and backup.exists() and name not in swapped:
+                if (
+                    not commit_verified
+                    and backup is not None
+                    and backup.exists()
+                    and name not in swapped
+                ):
                     backup.replace(safe_outputs[name])
+
+
+def sync_skill_roots(
+    source: Path,
+    outputs: Mapping[str, Path],
+    *,
+    fixture_root: Path,
+    apply: bool = False,
+    fault_step: str | None = None,
+) -> SyncResult:
+    """Dry-run or atomically replace all three fixture runtime roots."""
+
+    safe_source, safe_outputs, boundary = _validate_roots(source, outputs, fixture_root)
+    return _sync_validated_roots(
+        safe_source,
+        safe_outputs,
+        lock_path=boundary / ".skill-sync.lock",
+        apply=apply,
+        fault_step=fault_step,
+    )
+
+
+def sync_approved_skill_roots(
+    source: Path,
+    outputs: Mapping[str, Path],
+    *,
+    approved_roots: Mapping[str, Path],
+    lock_path: Path,
+    apply: bool = False,
+    fault_step: str | None = None,
+) -> SyncResult:
+    """Source-stage adapter for an explicitly injected exact real-root contract.
+
+    This adapter has no built-in live paths and is dry-run unless ``apply=True``.
+    """
+
+    safe_source, safe_outputs, safe_lock = _validate_approved_roots(
+        source, outputs, approved_roots, lock_path
+    )
+    return _sync_validated_roots(
+        safe_source,
+        safe_outputs,
+        lock_path=safe_lock,
+        apply=apply,
+        fault_step=fault_step,
+    )

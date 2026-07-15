@@ -1,5 +1,16 @@
 # Handoff
 
+## Independent QA Convergence Update (authoritative, 2026-07-15)
+
+- The central resolver is the production source for role/model/thinking/fallback/capabilities, including `root_manager = gpt-5.6-sol / ultra` and structured `UNAVAILABLE`.
+- `skill-source-sync` accepts only explicitly injected real roots named `source`, `claude`, `codex`, and `agents`; it has no built-in live paths and defaults to dry-run.
+- The adapter enforces exact allowlists, realpath/reparse and overlap boundaries, an external process lock, staging, fsync attempt, full-tree manifests, per-target atomic swap, post-verify rollback, and backup cleanup only after verified commit.
+- `.claude`, `.codex`, and `.agents` are all mandatory with identical manifests. A same-name shadow with a different hash fails closed/non-zero.
+- The versioned watcher adapter records child exit and metadata-only stdout/stderr and rejects timeouts, malformed heartbeat, non-zero exit, policy/manifest mismatch, and failed targets. Root precedence is fixed as `vault, claude, codex, agents`.
+- Current full GREEN: `python -B -m unittest discover -s tests -v` = **41/41**, plus one explicit Windows file-symlink privilege skip.
+- A true `compileall` rerun uses the no-space QA checkout and a separate temporary pycache root; exact evidence is recorded in the external implementation handoff.
+- No real Vault/runtime root sync, watcher installation/configuration/restart, plugin cache mutation, or WSL/Hermes/OpenClaw change was performed. Apply remains blocked behind a separate deployment approval.
+
 ## Current Status
 
 - Status: P0 harness safety source implemented and isolated fixtures verified; live deployment remains blocked behind a separate approval gate.

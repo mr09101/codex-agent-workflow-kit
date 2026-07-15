@@ -14,6 +14,7 @@ from .model_policy import load_default_policy, resolve_role
 from .skill_sync import (
     SkillSyncError,
     failure_heartbeat,
+    sync_approved_skill_roots,
     sync_skill_roots,
     verify_skill_roots,
 )
@@ -322,7 +323,15 @@ def run_validate_envelope(args: argparse.Namespace) -> int:
 
 
 def run_harness_resolve(args: argparse.Namespace) -> int:
-    catalog = _read_json_object(_absolute_path(args.catalog))
+    if args.catalog_stdin:
+        try:
+            catalog = json.load(sys.stdin)
+        except json.JSONDecodeError as error:
+            raise CliError("Capability catalog stdin must be valid JSON.") from error
+        if not isinstance(catalog, dict):
+            raise CliError("Capability catalog stdin must be an object.")
+    else:
+        catalog = _read_json_object(_absolute_path(args.catalog))
     policy = (
         _read_json_object(_absolute_path(args.policy))
         if args.policy
@@ -385,6 +394,27 @@ def run_skill_verify(args: argparse.Namespace) -> int:
     return 0 if result.ok else 5
 
 
+def run_skill_source_sync(args: argparse.Namespace) -> int:
+    targets = _parse_targets(args.target)
+    approved = _parse_targets(args.approved_root)
+    try:
+        result = sync_approved_skill_roots(
+            _absolute_path(args.source),
+            targets,
+            approved_roots=approved,
+            lock_path=_absolute_path(args.lock_path),
+            apply=args.apply,
+        )
+    except SkillSyncError as error:
+        payload = error.heartbeat or failure_heartbeat(
+            "sync", error_code=getattr(error, "code", "SOURCE_SYNC_FAILED")
+        )
+        print(json.dumps(payload, sort_keys=True))
+        return 6
+    print(json.dumps(result.to_mapping(), sort_keys=True))
+    return 0
+
+
 def _add_skill_roots(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--fixture-root", required=True, help="OS temp fixture root.")
     parser.add_argument("--source", required=True, help="Canonical fixture source.")
@@ -422,7 +452,13 @@ def build_parser() -> argparse.ArgumentParser:
         "harness-resolve", help="Resolve a role against an explicit capability catalog."
     )
     resolver_parser.add_argument("role", help="Policy role name.")
-    resolver_parser.add_argument("--catalog", required=True, help="Capability catalog JSON.")
+    catalog_mode = resolver_parser.add_mutually_exclusive_group(required=True)
+    catalog_mode.add_argument("--catalog", help="Capability catalog JSON.")
+    catalog_mode.add_argument(
+        "--catalog-stdin",
+        action="store_true",
+        help="Read the explicit machine capability catalog from stdin.",
+    )
     resolver_parser.add_argument("--policy", help="Optional policy JSON override.")
     resolver_parser.add_argument(
         "--capability", action="append", default=[], help="Requested task capability."
@@ -443,6 +479,28 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_skill_roots(verify_parser)
     verify_parser.set_defaults(func=run_skill_verify)
+
+    source_sync_parser = subparsers.add_parser(
+        "skill-source-sync",
+        help="Dry-run an explicitly allowlisted source-stage sync adapter.",
+    )
+    source_sync_parser.add_argument("--source", required=True)
+    source_sync_parser.add_argument(
+        "--target", action="append", required=True, help="Runtime root as name=path."
+    )
+    source_sync_parser.add_argument(
+        "--approved-root",
+        action="append",
+        required=True,
+        help="Exact approved real root as source=path or runtime=path.",
+    )
+    source_sync_parser.add_argument("--lock-path", required=True)
+    source_sync_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply only after an external live-deployment approval gate.",
+    )
+    source_sync_parser.set_defaults(func=run_skill_source_sync)
 
     return parser
 
