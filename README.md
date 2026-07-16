@@ -108,6 +108,10 @@ my-agent-project/
 - `HANDOFF.md`: current status, recent changes, checks, risks, and next steps.
 - `FINAL_KEEP/README.md`: rules for final artifacts and archive discipline.
 
+For an artifact-heavy project, follow the
+[`FINAL_KEEP` archive discipline example](examples/final-keep-archive.md) to keep stable
+current file names, rotate the previous set together, and record a rollback source.
+
 ## Maintainer Workflow Example
 
 1. **Issue triage:** a maintainer labels an issue as a small Codex-ready task and records acceptance criteria.
@@ -185,7 +189,8 @@ The roadmap is intentionally incremental. See [ROADMAP.md](ROADMAP.md).
 |   `-- security-checklist.md
 |-- examples/
 |   |-- ai-project-layout.md
-|   `-- check-output.md
+|   |-- check-output.md
+|   `-- final-keep-archive.md
 |-- tests/
 |   |-- test_cli.py
 |   |-- test_contracts.py

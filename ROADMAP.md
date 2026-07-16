@@ -22,7 +22,7 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 ## v0.3: Template Packs
 
 - Add optional template packs for Python libraries, web apps, documentation-only repos, and artifact-heavy projects.
-- Add examples for `FINAL_KEEP` archive discipline.
+- Maintain the `FINAL_KEEP` archive discipline example for artifact-heavy projects.
 - Add issue triage templates that convert maintainer reports into scoped Codex tasks.
 - Maintain guidance for using the kit with existing repositories without overwriting local conventions.
 

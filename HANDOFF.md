@@ -13,13 +13,17 @@
 
 ## Current Status
 
-- Status: P0 harness safety source implemented and isolated fixtures verified; live deployment remains blocked behind a separate approval gate.
+- Status: `FINAL_KEEP` archive discipline is documented for artifact-heavy projects; the P0 source remains fixture-bounded and live deployment remains approval-gated.
 - Repository: `codex-multi-agent-workflow-kit`.
-- Last updated: 2026-07-15.
-- Latest baseline commit: `f758e9553e44a9828f582b693f57cfeed8582006` (`docs: add existing repository adoption guide`).
-- Current work: Provide the canonical envelope/model policy and a versioned, fixture-bounded skill-sync/verify source for independent P0 QA.
+- Last updated: 2026-07-16.
+- Baseline before this maintenance change: `53bf14b2d3889e40d990ca8e898fad1ae1958081` (`fix: add approved P0 sync and watcher adapters`).
+- Current work: Maintain practical public examples without broadening the CLI runtime or the P0 source boundary.
 
 ## Recent Changes
+
+- Added an artifact-heavy `FINAL_KEEP` example with stable current names, dated set-level archives, rollback guidance, and a reproducible handoff note.
+- Linked the example from README and included it in the documented repository tree.
+- Marked the corresponding v0.3 roadmap item as maintained.
 
 - Added the exact seven-field operation envelope, canonical cwd/delegation/deadline validation, machine-readable schemas, and shared error codes.
 - Added the versioned role-to-model/thinking/fallback/capability resolver with exact Sol/Terra/Luna assignments, deterministic security/design promotion, semantic 5.9/5.10 comparison, and structured `UNAVAILABLE`.
@@ -37,6 +41,12 @@
 - Added `PROJECT_BLUEPRINT.md` with the required ten project-governance items.
 
 ## Verification
+
+- Weekly repository growth (2026-07-16):
+  - `python -B -m unittest discover -s tests -v`: passed (41 tests, 1 explicit Windows file-symlink privilege skip).
+  - Fresh `init` and `check` smoke commands: passed in an operating-system temporary directory.
+  - Temporary smoke cleanup and README example link target check: passed.
+  - `git diff --check` and scoped public-safety scan: passed.
 
 - P0 source verification (2026-07-15):
   - Baseline RED: missing contract modules and CLI routes raised `ModuleNotFoundError` or argparse invalid choice; additional RED captured 25-hour deadlines, incomplete policy outputs, missing heartbeat/verify route, overlapping targets, and directory shadow conflicts.
@@ -73,6 +83,7 @@ git status --short --branch
 
 ## Next Steps
 
+- Add a standard-library test that validates local README and documentation links so future examples cannot drift.
 - Independent QA should rerun FX-01 through FX-14 using the implementation handoff under `D:\AI PROJECT\.codex-jobs\skill-harness-p0`.
 - Do not connect this source to live skill roots or automation until the owner approves a deployment plan with backup, rollback, version, and downtime evidence.
 
