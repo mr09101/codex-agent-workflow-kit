@@ -13,13 +13,16 @@
 
 ## Current Status
 
-- Status: `FINAL_KEEP` archive discipline is documented for artifact-heavy projects; the P0 source remains fixture-bounded and live deployment remains approval-gated.
+- Status: Local documentation-link drift is covered by a dependency-free regression test; the P0 source remains fixture-bounded and live deployment remains approval-gated.
 - Repository: `codex-multi-agent-workflow-kit`.
-- Last updated: 2026-07-16.
-- Baseline before this maintenance change: `53bf14b2d3889e40d990ca8e898fad1ae1958081` (`fix: add approved P0 sync and watcher adapters`).
-- Current work: Maintain practical public examples without broadening the CLI runtime or the P0 source boundary.
+- Last updated: 2026-07-23.
+- Baseline before this maintenance change: `9db5dd89b286aaf9933990a380f739f298a8dd70` (`docs: add FINAL_KEEP archive example`).
+- Current work: Keep public documentation navigable and CI-checkable without adding runtime dependencies or network behavior.
 
 ## Recent Changes
+
+- Added standard-library regression coverage for local Markdown links in the README, root maintainer docs, `docs/`, and `examples/`.
+- Recorded local-link validation as a maintained v0.1 roadmap capability.
 
 - Added an artifact-heavy `FINAL_KEEP` example with stable current names, dated set-level archives, rollback guidance, and a reproducible handoff note.
 - Linked the example from README and included it in the documented repository tree.
@@ -41,6 +44,12 @@
 - Added `PROJECT_BLUEPRINT.md` with the required ten project-governance items.
 
 ## Verification
+
+- Weekly repository growth (2026-07-23):
+  - Focused documentation-link test: passed (1 test).
+  - `python -B -m unittest discover -s tests -v`: passed (42 tests, 1 explicit Windows file-symlink privilege skip).
+  - Fresh `init` and `check` smoke commands plus temporary-target cleanup: passed.
+  - Staged `git diff --check`, exact-file scope, and public-safety scan: passed.
 
 - Weekly repository growth (2026-07-16):
   - `python -B -m unittest discover -s tests -v`: passed (41 tests, 1 explicit Windows file-symlink privilege skip).
@@ -83,7 +92,7 @@ git status --short --branch
 
 ## Next Steps
 
-- Add a standard-library test that validates local README and documentation links so future examples cannot drift.
+- Add a Codex-ready issue triage template that turns maintainer reports into scoped tasks with acceptance criteria and verification commands.
 - Independent QA should rerun FX-01 through FX-14 using the implementation handoff under `D:\AI PROJECT\.codex-jobs\skill-harness-p0`.
 - Do not connect this source to live skill roots or automation until the owner approves a deployment plan with backup, rollback, version, and downtime evidence.
 

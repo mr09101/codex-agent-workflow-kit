@@ -7,6 +7,7 @@ Codex Agent Workflow Kit is intentionally small. The roadmap favors practical ma
 - Keep the CLI dependency-free and easy to install.
 - Maintain `init` and `check` coverage with standard-library tests.
 - Improve README examples for OSS maintainers using Codex.
+- Maintain automated local-link validation for the README, docs, and examples.
 - Add maintainer-facing docs for issue triage, PR review, release prep, and handoff recovery.
 - Add issue templates for workflow patterns, bugs, and feature requests.
 
